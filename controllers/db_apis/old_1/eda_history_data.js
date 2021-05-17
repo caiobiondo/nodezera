@@ -1,0 +1,37 @@
+const database = require ('../../services/database');
+
+const baseQuery =
+
+`SELECT 'EDA_HISTORY_DATA' TABELA, 'INSERT' OPERACAO,
+EDA_HISTORY_DATA.ID ,
+EDA_HISTORY_DATA.BUSINESS_KEY ,
+EDA_HISTORY_DATA.CHANNEL ,
+EDA_HISTORY_DATA.DATE_TIME_COMPLETED ,
+EDA_HISTORY_DATA.DATE_TIME_STARTED ,
+EDA_HISTORY_DATA.MODIFIED_CHARS ,
+EDA_HISTORY_DATA.SERVICE_ID ,
+EDA_HISTORY_DATA.STATUS ,
+EDA_HISTORY_DATA.TX_ID ,
+EDA_HISTORY_DATA.TYPE ,
+EDA_HISTORY_DATA.USER_ID ,
+EDA_HISTORY_DATA.BPF_NAME ,
+EDA_HISTORY_DATA.WORKLIST from EDA_HISTORY_DATA INNER JOIN DADOSPROPOSTADS ON  EDA_HISTORY_DATA.BUSINESS_KEY = DADOSPROPOSTADS.numproposta
+and IDS_DADOSPROPOSTADS = IDS_DADOSPROPOSTADS `;
+
+
+async function find(context) {
+  let query = baseQuery;
+  const binds = {};
+
+  if (context.id) {
+    binds.IDS_DADOSPROPOSTADS = context.id;
+
+    query += `\nwhere IDS_DADOSPROPOSTADS = :IDS_DADOSPROPOSTADS`;
+  }
+
+  const result = await database.simpleExecute(query, binds);
+
+  return result.rows;
+}
+
+module.exports.find = find;

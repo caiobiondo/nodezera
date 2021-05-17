@@ -1,0 +1,32 @@
+const database = require ('../../services/database');
+
+const baseQuery =
+
+
+`SELECT 'GETDEBTSINFORMATIONS_REQDS' TABELA, SYSDATE OPERACAO, 
+GETDEBTSINFORMATIONS_REQDS.IDS_GETDEBTSINFORMATIONS_REQDS ,
+GETDEBTSINFORMATIONS_REQDS.REQUEST_DOCUMENTS_DOCUMENT ,
+GETDEBTSINFORMATIONS_REQDS.REQUEST_DOCUMENTS_DOCUMENTTYPE ,
+GETDEBTSINFORMATIONS_REQDS.SYS_CREATEDATE from GETDEBTSINFORMATIONS_REQDS inner join DADOSPROPOSTADS on GETDEBTSINFORMATIONS_REQDS.IDS_GETDEBTSINFORMATIONS_REQDS = DADOSPROPOSTADS.IDS_GETDEBTSINFORMATIONS_REQDS  and DADOSPROPOSTADS.NUMPROPOSTA = NUMPROPOSTA `;
+
+
+
+
+
+
+async function find(context) {
+  let query = baseQuery;
+  const binds = {};
+
+  if (context.id) {
+    binds.NUMPROPOSTA = context.id;
+
+    query += `\nwhere NUMPROPOSTA = :NUMPROPOSTA`;
+  }
+
+  const result = await database.simpleExecute(query, binds);
+
+  return result.rows;
+}
+
+module.exports.find = find;

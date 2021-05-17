@@ -1,0 +1,44 @@
+const database = require ('../../services/database');
+
+const baseQuery =
+
+`SELECT 'FATURA_DS' TABELA, 'INSERT' OPERACAO, 
+FATURA_DS.IDS_FATURA_DS ,
+FATURA_DS.ARRIDX_DADOSPROPOSTADS ,
+FATURA_DS.DTCONTESTACAO ,
+FATURA_DS.DTPAGAMENTO ,
+FATURA_DS.DTVENCIMENTO ,
+FATURA_DS.FAMILIA ,
+FATURA_DS.NUMERO ,
+FATURA_DS.SISTEMA ,
+FATURA_DS.STATUS ,
+FATURA_DS.SYS_CREATEDATE ,
+FATURA_DS.VR ,
+FATURA_DS.VRAJUSTADO ,
+FATURA_DS.VRCONTESTADO ,
+FATURA_DS.VRPAGO ,
+FATURA_DS.IDS_DADOSPROPOSTADS from FATURA_DS`;
+
+
+
+/*
+`SELECT 'FATURA_DS' TABELA, 'INSERT' OPERACAO, SYSDATE DATA_STREAM, FATURA_DS.* from FATURA_DS , DADOSPROPOSTADS 
+WHERE  FATURA_DS.IDS_DADOSPROPOSTADS	 = DADOSPROPOSTADS.IDS_DADOSPROPOSTADS and DADOSPROPOSTADS.NUMPROPOSTA = '000000000521575'`;
+**/
+
+async function find(context) {
+  let query = baseQuery;
+  const binds = {};
+
+  if (context.id) {
+    binds.IDS_DADOSPROPOSTADS = context.id;
+
+    query += `\nwhere IDS_DADOSPROPOSTADS = :IDS_DADOSPROPOSTADS`;
+  }
+
+  const result = await database.simpleExecute(query, binds);
+
+  return result.rows;
+}
+
+module.exports.find = find;

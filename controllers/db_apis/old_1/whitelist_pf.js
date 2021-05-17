@@ -1,0 +1,38 @@
+const database = require ('../../services/database');
+
+const baseQuery =
+
+`SELECT 'WHITELIST_PF' TABELA, 'INSERT' OPERACAO, 
+WHITELIST_PF.IDS_WHITELIST_PF ,
+WHITELIST_PF.COD_ARQ_PROCESSAR ,
+WHITELIST_PF.CODIGOERRO ,
+WHITELIST_PF.CPF ,
+WHITELIST_PF.DATA_WL ,
+WHITELIST_PF.DE_PLANO_DPO ,
+WHITELIST_PF.DESCRICAOERRO ,
+WHITELIST_PF.MOTIVO ,
+WHITELIST_PF.SYS_CREATEDATE ,
+WHITELIST_PF.NOMECLIENTE from WHITELIST_PF  INNER JOIN DADOSPROPOSTADS ON  WHITELIST_PF.IDS_WHITELIST_PF = DADOSPROPOSTADS.IDS_WHITELIST_PF  and DADOSPROPOSTADS.IDS_DADOSPROPOSTADS = IDS_DADOSPROPOSTADS `;
+
+/*
+`SELECT 'WHITELIST_PF' TABELA, 'INSERT' OPERACAO, SYSDATE DATA_STREAM, WHITELIST_PF.* 
+from WHITELIST_PF , DADOSPROPOSTADS 
+WHERE  WHITELIST_PF.IDS_WHITELIST_PF = DADOSPROPOSTADS.IDS_WHITELIST_PF and DADOSPROPOSTADS.NUMPROPOSTA = '000000000521575'`;
+**/
+
+async function find(context) {
+  let query = baseQuery;
+  const binds = {};
+
+  if (context.id) {
+    binds.client_id = context.id;
+
+    query += `\nwhere client_id = :client_id`;
+  }
+
+  const result = await database.simpleExecute(query, binds);
+
+  return result.rows;
+}
+
+module.exports.find = find;
